@@ -168,7 +168,7 @@ class VueLab
         }
 
         // styles
-        $styles = implode(PHP_EOL, array_column($compos, 'css'));
+        $styles = trim(implode(PHP_EOL, array_column($compos, 'css')));
         if (!empty($styles)) {
             // use css-preprocessor
             if (self::$use_less) {
@@ -192,7 +192,8 @@ class VueLab
  *
  * @param $path string filesystem path
  */
-function vuelab_add_path($path){
+function vuelab_add_path($path)
+{
     VueLab::add_path($path);
 }
 
@@ -221,6 +222,25 @@ function vuelab_inject()
 function vuelab_append($html)
 {
     VueLab::append($html);
+}
+
+/**
+ * Setup vue oneliner. Shorthand for ::add_path + ::req
+ * @param string|string[] $paths Path to component repositories
+ * @param array $components Components to include
+ */
+function vuelab_setup($paths = '', $components = []){
+
+    // setup paths
+    if (!is_array($paths)){
+        $paths = [$paths];
+    }
+    foreach ($paths as $path){
+        VueLab::add_path($path);
+    }
+
+    // include components
+    VueLab::req($components);
 }
 
 // ~ let it start ~

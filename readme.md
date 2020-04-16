@@ -1,4 +1,4 @@
-# Vuelab – PHP loader for Vue Single File Components applications
+# Vuelab – PHP loader for Vue Single File Components
 
 It's tiny tool that helps to integrate Vue with all reactivity benefits to almost
  every PHP project on any PHP hosting – without need of heavy-weight loaders like
@@ -6,8 +6,8 @@ It's tiny tool that helps to integrate Vue with all reactivity benefits to almos
  
 Also available as WordPress plugin: just drop in `/wp-content/plugins` folder.
 
-Vue components composes with [vikseriq/vuer](https://github.com/vikseriq/vuer) utility
- and injects with simple `html container + new Vue` technique.
+Vue components composes with [vuer](#vuer) utility
+ and injects with simple `html container + new Vue` [vueLauncher](#vuelauncher) technique.
 
 Additionally it uses [lessphp](https://leafo.net/lessphp/) for processing less.
 
@@ -20,7 +20,7 @@ only composing `*.vue` into valid ES5 scripts and boot instances.
 
 1. Include Vuelab.
 
-2. Provide path to dir with Vue single file components. Or drop some into '/vuelab/components'.
+2. Provide path to dir with Vue single file components. Or drop some into `/vuelab/components`.
 
 3. Register components – just by typing component names.
 
@@ -36,9 +36,7 @@ Drop `vuelab` and create `index.php` looking like:
 ```php
 include '/vuelab/vuelab.php';
 
-vuelab_add_path(__DIR__);
-
-vuelab_require(['app', 'todo-list', 'todo']);
+vuelab_setup(__DIR__, ['app', 'todo-list', 'todo']);
 
 vuelab_append('<div class="js-v-scope"><app /></div>');
 
@@ -48,12 +46,32 @@ vuelab_inject();
 
 That's all.
 
+# Documentation
+
+## Vuer 
+
+[Vuer](lib/vuer.php) used to convert `*.vue` files to browser-executable `<script>`
+
+
+## VueLauncher – make a Vue instance anywhere
+
+[VueLauncher](assets/vue-launcher.js) helps boot Vue instance on any html container, 
+by default used selector `.js-v-scope`.
+
 
 # Things to do
 
-[_] Remove jQuery dependency in `assets/launcher.js`
+[_] Sample project.
 
-[_] Sample project
+[_] Load `vue.min.js` from upstream on demand, do not store it with plugin.
+
+[_] Pass props to vueLauncher.
+
+[_] Build `vue-launcher.min.js`.
+
+[_] Pass variables (like string translations) to Vue component via `__v` on build time.
+
+[_] Make Vuelab available as Composer package.
 
 
 # License
