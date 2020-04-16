@@ -49,10 +49,18 @@ class vuer {
         return preg_replace('~//?\s*\*[\s\S]*?\*\s*//?~', '', $content);
     }
 
-    protected static function parse($content){
+    protected static function parse($content, $options = []){
         $content = self::cleanup($content);
+        $prefix = '';
+        if (!empty($options['tagname'])){
+            // extend wrap function template with __v definition
+            $prefix = 'var __v={template:template, component:"'.$options['tagname'].'"};';
+        }
         return [
-            'script' => '(function(template){'.self::extract_script($content).'})(\''.self::extract_template($content).'\');',
+            'script' => '(function(template){'
+                .$prefix.PHP_EOL
+                .self::extract_script($content).'})(\''.self::extract_template($content)
+                .'\');',
             'css' => self::extract_style($content)
         ];
     }
@@ -64,9 +72,12 @@ class vuer {
         return $html;
     }
 
-    public static function load($template_file, $render = false){
+    public static function load($template_file, $render = false, $options = []){
+        if (!is_file($template_file)){
+            return null;
+        }
         $content = file_get_contents($template_file);
-        $component = self::parse($content);
+        $component = self::parse($content, $options);
 
         return $render ? self::render($component) : $component;
     }

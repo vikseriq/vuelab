@@ -58,7 +58,10 @@ class VueLab
      */
     static function add_path($full_path)
     {
-        static::$__paths[] = $full_path;
+        $path = realpath($full_path);
+        if (!in_array($path, static::$__paths)) {
+            static::$__paths[] = $path;
+        }
     }
 
     /**
@@ -125,7 +128,12 @@ class VueLab
             return;
 
         // register component
-        self::$__registry[$path] = $path;
+        self::$__registry[$path] = [
+            'path' => $path,
+            'namespace' => $namespace,
+            'component' => $component,
+            'tagname' => trim($namespace . '-' . $component, '-'),
+        ];
     }
 
     /**
@@ -145,10 +153,8 @@ class VueLab
     static function inject()
     {
         $compos = [];
-        foreach (self::$__registry as $file) {
-            if (is_file($file)) {
-                $compos[] = vuer::load($file);
-            }
+        foreach (self::$__registry as $file_info) {
+            $compos[] = vuer::load($file_info['path'], false, $file_info);
         }
 
         // elements
