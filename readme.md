@@ -52,9 +52,31 @@ That's all.
 
 # Documentation
 
-## Vuer 
+## Vuelab
+
+### Vuelab::inject
+
+Returns HTML string with Vue components, styles and launcher.
+
+1. Composes script+template bundle with every component via vuer. 
+
+2. Wrap bundle in js function and bind execution on `document.vueReady` event to prevent 
+ evaluation before Vue and vueLauncher is ready.
+ 
+3. Appends vueLauncher code with trimmed space and comments.
+
+4. Process bundle styles.
+
+5. If `\VueLab::$use_less` is set – load [less compiler](lib/lessc.php) and process styles.
+
+6. Appends rest of html added via `\VueLab::append`.
+
+
+## Vuer – load Vue SFC with PHP
 
 [Vuer](lib/vuer.php) used to convert `*.vue` files to browser-executable `<script>`
+
+Inspired by [requirejs-vue](https://github.com/vikseriq/requirejs-vue/) technique.
 
 
 ## VueLauncher – make a Vue instance anywhere
@@ -75,8 +97,6 @@ When `\VueLab::$wp_enqueue_vue` flag is set, Vue `wp_enqueue_script`-ed
 # Things to do
 
 [_] Sample project.
-
-[_] Build `vue-launcher.min.js`.
 
 [_] Pass variables (like string translations) to Vue component via `__v` on build time.
 

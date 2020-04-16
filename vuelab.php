@@ -150,7 +150,8 @@ class VueLab
         self::$__html .= $html . PHP_EOL;
     }
 
-    static function prepend($html){
+    static function prepend($html)
+    {
         self::$__html_pre .= $html;
     }
 
@@ -171,11 +172,13 @@ class VueLab
         // elements
         $html .= '<script>document.addEventListener("vueReady", function(){'
             . implode(PHP_EOL, array_column($compos, 'script'))
-            . '});</script>';
+            . '});</script>' . PHP_EOL;
 
         // launcher
         if (static::$use_launcher) {
-            $html .= '<script>' . file_get_contents(__DIR__ . '/assets/vue-launcher.js') . '</script>';
+            $launcher_js = file_get_contents(__DIR__ . '/lib/vue-launcher.js');
+            $html .= '<script>' . preg_replace('!(//.*?\n)|(\s{2,})!', '', $launcher_js)
+                . '</script>' . PHP_EOL;
         }
 
         // styles
@@ -255,8 +258,8 @@ function vuelab_setup($paths = '', $components = [], $launcher_options = [])
     // include components
     VueLab::req($components);
 
-    if (!empty($launcher_options)){
-        VueLab::prepend('<script>window.vueLauncherOptions = '.json_encode($launcher_options).'</script>');
+    if (!empty($launcher_options)) {
+        VueLab::prepend('<script>window.vueLauncherOptions = ' . json_encode($launcher_options) . '</script>');
     }
 }
 
