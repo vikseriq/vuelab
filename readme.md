@@ -11,8 +11,12 @@ Vue components composes with [vuer](#vuer) utility
 
 Additionally it uses [lessphp](https://leafo.net/lessphp/) for processing less.
 
-Note that ES6/`module exports` not supported – we do not process nor evaluate js on server side,
-only composing `*.vue` into valid ES5 scripts and boot instances.
+Note that ES6/`module exports` not supported – loader do not process nor evaluate js on server side,
+ only composing `*.vue` into valid ES5 scripts and boot instances.
+
+Template compilation relies on Vue built-in template compiler, 
+ so you **must use** full version of Vue lib, not runtime-only.
+
 
 # Usage
 
@@ -55,17 +59,22 @@ That's all.
 
 ## VueLauncher – make a Vue instance anywhere
 
-[VueLauncher](assets/vue-launcher.js) helps boot Vue instance on any html container, 
+[VueLauncher](lib/vue-launcher.js) helps boot Vue instance on any html container, 
 by default used selector `.js-v-scope`.
 
+
+## WordPress plugin
+
+Install by uploading archive with this repos or by using awesome [GitHub Updater](https://github.com/afragen/github-updater/releases/latest) plugin.
+
+When `\VueLab::$wp_enqueue_vue` flag is set, Vue `wp_enqueue_script`-ed 
+ as `vue` from path specified in `\VueLab::$wp_vuejs_path`.
+ Obviously, for better loading time and use with cache/packer plugins 
+ provide path to local copy of `vue.min.js`.
 
 # Things to do
 
 [_] Sample project.
-
-[_] Load `vue.min.js` from upstream on demand, do not store it with plugin.
-
-[_] Pass props to vueLauncher.
 
 [_] Build `vue-launcher.min.js`.
 

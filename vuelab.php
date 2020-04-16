@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name: VueLab
+ * Plugin Name: Vuelab
  * Description: Vue your logic with easy
  * Plugin URI: https://github.com/vikseriq/vuelab
  * GitHub Plugin URI: https://github.com/vikseriq/vuelab
  * Author: vikseriq
  * Author URI: https://vikseriq.xyz/
- * Version: 0.1.0
+ * Version: 0.4.0
  * License: MIT
  * License URI: https://tldrlegal.com/license/mit-license
  */
@@ -17,6 +17,7 @@ class VueLab
 {
     protected static $__registry = [];
     protected static $__html = '';
+    protected static $__html_pre = '';
     protected static $__paths = [
         __DIR__ . '/components'
     ];
@@ -26,13 +27,17 @@ class VueLab
      */
     static $use_less = false;
     /**
-     * @var bool use /assets/launcher.js to boot in the Vue instances
+     * @var bool use /assets/vue-launcher.js to boot in the Vue instances
      */
     static $use_launcher = true;
     /**
      * @var bool flag: add Vue lib in wp scripts enqueue
      */
     static $wp_enqueue_vue = true;
+    /**
+     * @var string path to vue.min.js file
+     */
+    static $wp_vuejs_path = 'https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js';
 
     static function init()
     {
@@ -42,7 +47,7 @@ class VueLab
 
                 // enqueue vue
                 if (static::$wp_enqueue_vue) {
-                    wp_enqueue_script('vue', plugin_dir_url(__FILE__) . '/assets/vue.min.js', [], null, true);
+                    wp_enqueue_script('vue', static::$wp_vuejs_path, [], null, true);
                 }
 
                 // loader
@@ -145,6 +150,10 @@ class VueLab
         self::$__html .= $html . PHP_EOL;
     }
 
+    static function prepend($html){
+        self::$__html_pre .= $html;
+    }
+
     /**
      * Output vuelab html with composed Vue components, styles and injection script.
      *
@@ -157,8 +166,10 @@ class VueLab
             $compos[] = vuer::load($file_info['path'], false, $file_info);
         }
 
+        $html = self::$__html_pre;
+
         // elements
-        $html = '<script>document.addEventListener("vueReady", function(){'
+        $html .= '<script>document.addEventListener("vueReady", function(){'
             . implode(PHP_EOL, array_column($compos, 'script'))
             . '});</script>';
 
@@ -228,19 +239,25 @@ function vuelab_append($html)
  * Setup vue oneliner. Shorthand for ::add_path + ::req
  * @param string|string[] $paths Path to component repositories
  * @param array $components Components to include
+ * @param array $launcher_options Options for vueLauncher
  */
-function vuelab_setup($paths = '', $components = []){
+function vuelab_setup($paths = '', $components = [], $launcher_options = [])
+{
 
     // setup paths
-    if (!is_array($paths)){
+    if (!is_array($paths)) {
         $paths = [$paths];
     }
-    foreach ($paths as $path){
+    foreach ($paths as $path) {
         VueLab::add_path($path);
     }
 
     // include components
     VueLab::req($components);
+
+    if (!empty($launcher_options)){
+        VueLab::prepend('<script>window.vueLauncherOptions = '.json_encode($launcher_options).'</script>');
+    }
 }
 
 // ~ let it start ~
