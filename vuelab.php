@@ -158,7 +158,7 @@ class VueLab
 
         // launcher
         if (static::$use_launcher) {
-            $html .= '<script>' . file_get_contents(__DIR__ . '/assets/launcher.js') . '</script>';
+            $html .= '<script>' . file_get_contents(__DIR__ . '/assets/vue-launcher.js') . '</script>';
         }
 
         // styles
