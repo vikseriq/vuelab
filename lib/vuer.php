@@ -1,5 +1,7 @@
 <?php
 
+namespace vikseriq\vuelab;
+
 /**
  * A way to load .vue-components as inline functions
  * during server-side rendering without builders.

@@ -1,0 +1,25 @@
+{
+  "name": "vikseriq/vuelab",
+  "description": "PHP loader for Vue Single File Components",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "vue",
+    "loader",
+    "less"
+  ],
+  "authors": [
+    {
+      "name": "Wiktor Serow",
+      "email": "vikseriq@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4"
+  },
+  "autoload": {
+    "classmap": [
+      "vuelab.php"
+    ]
+  }
+}
