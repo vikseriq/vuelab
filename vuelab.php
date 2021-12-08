@@ -1,15 +1,17 @@
 <?php
 /**
- * Plugin Name: Vuelab
+ * Plugin Name: VueLab
  * Description: Vue your logic with easy
  * Plugin URI: https://github.com/vikseriq/vuelab
  * GitHub Plugin URI: https://github.com/vikseriq/vuelab
  * Author: vikseriq
  * Author URI: https://vikseriq.xyz/
- * Version: 0.4.0
+ * Version: 1.0.0
  * License: MIT
  * License URI: https://tldrlegal.com/license/mit-license
  */
+
+namespace vikseriq\vuelab;
 
 include_once __DIR__ . '/lib/vuer.php';
 
@@ -37,7 +39,7 @@ class VueLab
     /**
      * @var string path to vue.min.js file
      */
-    static $wp_vuejs_path = 'https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js';
+    static $wp_vuejs_path = 'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js';
 
     static function init()
     {
@@ -51,7 +53,7 @@ class VueLab
                 }
 
                 // loader
-                add_action('wp_footer', 'vuelab_inject', 228);
+                add_action('wp_footer', __NAMESPACE__ . '\vuelab_inject', 228);
             });
         }
     }
@@ -188,7 +190,7 @@ class VueLab
             if (self::$use_less) {
                 include_once __DIR__ . '/lib/lessc.php';
                 if (class_exists('lessc')) {
-                    $less = new lessc();
+                    $less = new \lessc();
                     $styles = $less->compile($styles);
                 }
             }

@@ -1,6 +1,6 @@
 # Vuelab – PHP loader for Vue Single File Components
 
-It's tiny tool that helps to integrate Vue with all reactivity benefits to almost
+It's tiny tool that helps to integrate Vue (v.2) with all reactivity benefits to almost
  every PHP project on any PHP hosting – without need of heavy-weight loaders like
  webpack/rollup nor gulp/require.js.
  
@@ -9,29 +9,33 @@ Also available as WordPress plugin: just drop in `/wp-content/plugins` folder.
 Vue components composes with [vuer](#vuer) utility
  and injects with simple `html container + new Vue` [vueLauncher](#vuelauncher) technique.
 
-Additionally it uses [lessphp](https://leafo.net/lessphp/) for processing less.
+Additionally it uses [lessphp](https://leafo.net/lessphp/) for processing styles written in `less`.
 
-Note that ES6/`module exports` not supported – loader do not process nor evaluate js on server side,
+Note that Vue 3, ES6/`module exports`, template languages, loading by `src` and so on not supported 
+ – loader do not process nor evaluate js on server side,
  only composing `*.vue` into valid ES5 scripts and boot instances.
 
 Template compilation relies on Vue built-in template compiler, 
- so you **must use** full version of Vue lib, not runtime-only.
+ so you **must use** full version of vue.js lib, not runtime-only.
 
 
 # Usage
 
-0. Clone this repo.
+1. Clone this repo – or load via composer:
+```shell
+composer require vikseriq/vuelab
+```
 
-1. Include Vuelab.
+2. Include `vuelab.php` – or use composer autoload.
 
-2. Provide path to dir with Vue single file components. Or drop some into `/vuelab/components`.
+3. Provide path to dir with Vue single file components. Or drop some into `/vuelab/components`.
 
-3. Register components – just by typing component names.
+4. Register components – just by typing component names.
 
-4. Place somewhere html element with class `js-v-scope` – it will indicate vuelab 
+5. Place somewhere html element with class `js-v-scope` – it will indicate vuelab 
  to start Vue instance it this container.
 
-5. And call `vuelab_inject()`. Now your PHP page become a first-class Vue app.
+6. And call `vuelab_inject()`. Now your PHP page become a first-class Vue app.
 
 
 Assume that we have `app.vue` that loads `todo-list.vue` with `todo.vue` inside.
@@ -45,10 +49,63 @@ vuelab_setup(__DIR__, ['app', 'todo-list', 'todo']);
 vuelab_append('<div class="js-v-scope"><app /></div>');
 
 vuelab_inject();
-
 ```
 
 That's all.
+
+# Usage on WordPress
+
+1. Add plugin to Wordpress: via upload or copy to plugins dir.
+
+2. Enable plugin from `Plugins` page – it will hook automatically.
+
+3. Just use it: register components and their placeholders on desired page areas.
+
+For example, place `foo.vue` inside your template folder and add in `functions.php`:
+```php
+// register component located in current path named foo.vue
+vikseriq\vuelab\vuelab_setup(__DIR__, ['foo']);
+// register placement for `foo` component - it will placed where `vuelab_inject` executed, in this case - at footer
+vikseriq\vuelab\vuelab_append('<div class="js-v-scope"><foo /></div>');
+// optionally: enable less styles compilation
+vikseriq\vuelab\VueLab::$use_less = true;
+```
+
+```vue
+<template>
+  <div class="foo">Hello from Vue <span>{{ createdAt }}</span></div>
+</template>
+<script>
+Vue.component('foo', {
+  template: template, // ! it allows to pass template inside component
+  data: function () {
+    return {
+      createdAt: new Date().toLocaleTimeString()
+    }
+  }
+})
+</script>
+<style lang="less">
+// feel free to use less here
+@justOrange: #fc0;
+
+.foo {
+  display: block;
+  margin: 1rem auto;
+  padding: 1rem;
+  width: fit-content;
+  // sample use of less variables
+  border: 3px outset @justOrange;
+ 
+  // ... and nesting
+  span {
+    font-style: italic;
+  }
+}
+</style>
+```
+
+Then on the very bottom of pages will be `foo` component with greeting and current page loading time.
 
 # Documentation
 
@@ -96,13 +153,13 @@ When `\VueLab::$wp_enqueue_vue` flag is set, Vue `wp_enqueue_script`-ed
 
 # Things to do
 
-[_] Sample project.
+[+] Sample project.
 
 [_] Pass variables (like string translations) to Vue component via `__v` on build time.
 
-[_] Make Vuelab available as Composer package.
+[+] Make Vuelab available as Composer package.
 
 
 # License
 
-MIT © 2020 vikseriq
+MIT © 2020 - present, vikseriq
